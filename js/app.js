@@ -12,12 +12,15 @@ function adicionar () {
     let amigo = document.getElementById('nome-amigo');
     let lista = document.getElementById('lista-amigos');
 
+    if (btnAdicionar.classList.contains('disabled')) {
+        return;
+    }
     if (amigo.value === '') {
         alert('Insira o nome do amigo!')
         return;
     }
-    
-    if (btnAdicionar.classList.contains('disabled')) {
+    if (amigos.map(nome => nome.toLowerCase()).includes(amigo.value.toLowerCase())) {
+        alert('Esse nome já foi adicionado!')
         return;
     }
     
@@ -37,26 +40,42 @@ function adicionar () {
 
 function sortear () {
     embaralha(amigos);
-    let sorteio = document.getElementById('lista-sorteio');
+    let numeroLinha = 1;
+    let linha = document.getElementById(`linha-${numeroLinha}`);
 
     if(btnSortear.classList.contains('disabled')) {
         return;
-    } else if(sorteio.innerHTML === '') {
+    } else if(linha.innerHTML === '') {
         btnSortear.classList.add('disabled')
     }
 
     btnAdicionar.classList.add('disabled');
 
+    let contagemAmigos = 0;
     for (let i = 0; i < amigos.length; i++) {
-        if (i == amigos.length - 1) {
-            sorteio.innerHTML = sorteio.innerHTML + amigos[i] + ' ---> ' + amigos[0] + '<br>'
-        } else {
-            sorteio.innerHTML = sorteio.innerHTML + amigos[i] + ' ---> ' + amigos[i + 1] + '<br>'
+        if (contagemAmigos < 7) {    
+            if (i == amigos.length - 1) {
+                linha.innerHTML = linha.innerHTML + amigos[i] + ' ---> ' + amigos[0] + '<br>'
+            } else {
+                linha.innerHTML = linha.innerHTML + amigos[i] + ' ---> ' + amigos[i + 1] + '<br>'
+            }
+            contagemAmigos++;
+        } else if (contagemAmigos == 7) {
+                numeroLinha++;
+                novaLinha(numeroLinha);
+                linha = document.getElementById(`linha-${numeroLinha}`);
+                contagemAmigos = 0; 
         }
     }
-
     btnReiniciar.classList.add('form__link-bold');
 }
+
+
+function novaLinha (numeroLinha) {
+        document.getElementById('lista-sorteio').innerHTML = document.getElementById('lista-sorteio').innerHTML + `<p id="linha-${numeroLinha}"></p>`
+    }
+    
+
 
 function embaralha(lista) {
 
@@ -73,10 +92,9 @@ function embaralha(lista) {
 function reiniciar() {
     document.getElementById('nome-amigo').value = '';
     document.getElementById('lista-amigos').textContent = '';
-    document.getElementById('lista-sorteio').innerHTML = '';
+    document.getElementById('lista-sorteio').innerHTML = `<p id="linha-1"></p>`;
     btnSortear.classList.add('disabled');
     btnAdicionar.classList.remove('disabled');
     btnReiniciar.classList.remove('form__link-bold');
     amigos = [];
-
 }

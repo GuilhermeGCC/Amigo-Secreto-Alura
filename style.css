@@ -216,4 +216,8 @@ body {
   cursor: not-allowed;
 }
 
+.sorteio__container {
+  display: flex;
+  gap: 1.5em;
+}
 
